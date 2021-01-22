@@ -1,0 +1,55 @@
+
+
+function registerUser(){
+	// constructor
+	let user = {
+		username: String,
+		password: String,
+		role: String,
+	};
+
+	// Form Items
+	const username = document.getElementById('username').value;
+	const password = document.getElementById('password').value;
+	const role = document.getElementById('role').value;
+
+	// assignment
+	user.username = username;
+	user.password = password;
+	user.role = role;
+
+
+	if(validateRegistration(user.username, user.password)){
+		// Add to local storage then go to login
+		localStorage.setItem(user.username,JSON.stringify(user))
+		document.getElementById('loginLink').click()
+	}else
+		document.getElementById('reset').click()
+
+}
+
+function validateRegistration(username, password){
+	// Validate the Username
+	let validUsername = RegExp('^(?=.{2,10})')
+	.test(username)
+	
+	// Validate the Password
+	let validPassword = RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})")
+	.test(password)
+	
+	// Validation
+	if(!validUsername ) {
+		alert(`${username} needs to have 
+		a minimum 2 characters and a maximum of 10`)
+		return false;
+	}else if(!validPassword){
+		alert(`${password} needs to have 
+		a minimum 8 characters, 
+		at least 1 uppercase letter, 
+		1 lowercase letter, 
+		1 number and 1 special character`)
+		return false;
+	}else
+		return true;
+
+}

@@ -1,0 +1,138 @@
+const CURRENT_USER = JSON.parse(sessionStorage.getItem(sessionStorage.key(1)))
+const TO_LOGIN = document.getElementById('loginLink')
+
+// Authentication using session storage
+if (!CURRENT_USER) { TO_LOGIN.click() }
+
+// let element = document.createElement('li');
+// let innertext = document.createTextNode(CURRENT_USER);
+// element.appendChild(innertext);
+// document.getElementById('output').appendChild(element);
+
+function logout() {
+	sessionStorage.clear();
+	setTimeout(()=>{
+		TO_LOGIN.click();
+	},500)
+}
+
+
+function getAllFromLocalStorage(){
+	let arr = [];
+	for (let index = 0; index < localStorage.length; index++) {
+		const element = JSON.parse(localStorage.getItem(localStorage.key(index))); 
+		arr.push(element);
+	}
+	return arr
+}
+let localUser = getAllFromLocalStorage();
+
+let table = document.querySelector("table");
+// if local storage has only 1 use spread operator
+let data = (localUser.length>1) ? 
+	Object.keys(localUser[0]) : Object.keys(...localUser);
+
+generateTable(table, localUser);
+generateTableHead(table, data);
+
+function generateTableHead(table, data) {
+  let thead = table.createTHead();
+  let row = thead.insertRow();
+  for (let key of data) {
+    let th = document.createElement("th");
+    let text = document.createTextNode(key);
+    th.appendChild(text);
+    row.appendChild(th);
+  }
+}
+function generateTable(table, data) {
+  for (let element of data) {
+    let row = table.insertRow();
+    for (key in element) {
+      let cell = row.insertCell();
+      let text = document.createTextNode(element[key]);
+      cell.appendChild(text);
+    }
+  }
+}
+
+function submitEdit(){
+	// constructor
+	let user = {
+		username: String,
+		password: String,
+		role: String,
+	};
+
+	// Form Items
+	const username = document.getElementById('username').value;
+	const password = document.getElementById('password').value;
+	const role = document.getElementById('role').value;
+
+	// assignment
+	user.username = username;
+	user.password = password;
+	user.role = role;
+
+
+	if(validateRegistration(user.username, user.password)){
+		// Add to local storage then go to login
+		localStorage.setItem(user.username,JSON.stringify(user))
+		document.getElementById('reset').click()
+		location.reload()
+	}else
+		document.getElementById('reset').click()
+
+}
+
+function validateRegistration(username, password){
+	// Validate the Username
+	let validUsername = RegExp('^(?=.{2,10})')
+	.test(username)
+	
+	// Validate the Password
+	let validPassword = RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%^&*])(?=.{8,})")
+	.test(password)
+	
+	// Validation
+	if(!validUsername ) {
+		alert(`${username} needs to have 
+		a minimum 2 characters and a maximum of 10`)
+		return false;
+	}else if(!validPassword){
+		alert(`${password} needs to have 
+		a minimum 8 characters, 
+		at least 1 uppercase letter, 
+		1 lowercase letter, 
+		1 number and 1 special character`)
+		return false;
+	}else
+		return true;
+
+}
+
+// Get the modal
+var modal = document.getElementById("myModal");
+
+// Get the button that opens the modal
+var btn = document.getElementById("myBtn");
+
+// Get the <span> element that closes the modal
+var span = document.getElementsByClassName("close")[0];
+
+// When the user clicks on the button, open the modal
+btn.onclick = function() {
+  modal.style.display = "block";
+}
+
+// When the user clicks on <span> (x), close the modal
+span.onclick = function() {
+  modal.style.display = "none";
+}
+
+// When the user clicks anywhere outside of the modal, close it
+window.onclick = function(event) {
+  if (event.target == modal) {
+    modal.style.display = "none";
+  }
+}
